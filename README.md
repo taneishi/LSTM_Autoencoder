@@ -47,3 +47,9 @@ Using the trained model, losses were computed for the training set. A plot of th
 **Figure 3. The distribution of losses computed for the training set using the trained model.**
 
 Based on the distribution of losses on the training set, we decided to use 0.275 as the threshold for detecting anomalies. Next, the losses are calculated for the test set using the trained model to check if the output exceeds the threshold identified as abnormal. The distribution of losses for the test set is shown in Figure 4. The figure showing the distribution of losses for this model visualizes the occurrence of abnormal vibration, which is a predictor of bearing failures. The results confirm that the loss between input and output actually exceeds the defined threshold before bearing failure occurs.
+
+![The history of losses against the test set.](figure/test_loss.png)
+
+**Figure 4. The history of losses against the test set.**
+
+The approach of this analysis was to detect future bearing failures from abnormal vibrations before the actual physical failure occurs. In application, it is important to determine the optimal threshold for detecting anomalies in order to avoid detecting many false positives under normal operating conditions.
