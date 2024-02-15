@@ -28,6 +28,59 @@ Before training a model, the dataset is split into two parts: a training set tha
 
 The autoencoder model was implmented using modules of Long Short-Term Memory, LSTM, a form of recurrent neural network, RNN in PyTorch framework. The autoencoder consists of two parts, an encoder and a decoder, which encode the input into the embedding dimension and then output by the decoder to reconstructed the input from the embedding dimension. The model performs unsupervised or self-supervised learning to reduce the loss between the input and the output. The encoders and decoders are each composed of a two-layer LSTM, with the hidden dimension set to 16 and the embedding dimension set to 4. The mean absolute error, MAE was used as the loss function.
 
+```python
+class Encoder(nn.Module):
+    def __init__(self, seq_len, n_features, embedding_dim=16):
+        super(Encoder, self).__init__()
+
+        self.seq_len, self.n_features = seq_len, n_features
+        self.embedding_dim = embedding_dim
+        self.hidden_dim = 4 * embedding_dim
+
+        self.rnn1 = nn.LSTM(
+            input_size=n_features,
+            hidden_size=self.hidden_dim,
+            num_layers=1,
+            batch_first=True
+        )
+
+        self.rnn2 = nn.LSTM(
+            input_size=self.hidden_dim,
+            hidden_size=embedding_dim,
+            num_layers=1,
+            batch_first=True
+        )
+
+    def forward(self, x):
+        x = x.reshape((1, self.seq_len, self.n_features))
+
+        x, (_, _) = self.rnn1(x)
+        x, (hidden_n, _) = self.rnn2(x)
+
+        return hidden_n.reshape((self.seq_len, self.embedding_dim))
+        
+class Decoder(nn.Module):
+    def __init__(self, seq_len, embedding_dim=16, n_features=1):
+        super(Decoder, self).__init__()
+
+        self.seq_len, self.embedding_dim = seq_len, embedding_dim
+        self.n_features = n_features
+        self.hidden_dim = 4 * embedding_dim
+
+        self.rnn1 = nn.LSTM(
+            input_size=embedding_dim,
+            hidden_size=self.hidden_dim,
+            num_layers=1,
+            batch_first=True
+        )
+
+        self.rnn2 = nn.LSTM(
+            input_size=self.hidden_dim,
+            hidden_size=n_features,
+            num_layers=1,
+            batch_first=True
+```
+
 ## Results
 
 ### Unsupervised Learning
