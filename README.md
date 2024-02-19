@@ -30,7 +30,7 @@ The autoencoder model was implmented using modules of Long Short-Term Memory, LS
 
 ```python
 class Encoder(nn.Module):
-    def __init__(self, seq_len, n_features, embedding_dim=16):
+    def __init__(self, seq_len, n_features, embedding_dim=64):
         super(Encoder, self).__init__()
 
         self.seq_len, self.n_features = seq_len, n_features
@@ -60,7 +60,7 @@ class Encoder(nn.Module):
         return hidden_n.reshape((self.seq_len, self.embedding_dim))
         
 class Decoder(nn.Module):
-    def __init__(self, seq_len, embedding_dim=16, n_features=1):
+    def __init__(self, seq_len, embedding_dim=64, n_features=1):
         super(Decoder, self).__init__()
 
         self.seq_len, self.embedding_dim = seq_len, embedding_dim
@@ -79,6 +79,28 @@ class Decoder(nn.Module):
             hidden_size=n_features,
             num_layers=1,
             batch_first=True
+
+        self.output_layer = nn.Linear(self.n_features, n_features)
+
+    def forward(self, x):
+        x, (hidden_n, cell_n) = self.rnn1(x)
+        x, (hidden_n, cell_n) = self.rnn2(x)
+        x = x.reshape((self.seq_len, self.n_features))
+
+        return self.output_layer(x)
+
+class LSTMAutoencoder(nn.Module):
+    def __init__(self, seq_len, n_features, embedding_dim=64):
+        super(LSTMAutoencoder, self).__init__()
+
+        self.encoder = Encoder(seq_len, n_features, embedding_dim)
+        self.decoder = Decoder(seq_len, embedding_dim, n_features)
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+
+        return x
 ```
 
 ## Results
