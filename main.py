@@ -36,7 +36,7 @@ def load_dataset(args):
         sample = pd.read_csv(os.path.join(args.data_dir, filename), sep='\t')
         sample_mean_abs = sample.abs().mean().values.T
         df.append(sample_mean_abs)
-        
+
     # Merge the sensor samples.
     df = pd.DataFrame(df, index=index, columns=columns)
 
@@ -90,7 +90,7 @@ def main(args):
 
             train_loss = loss.item()
             train_losses.append(train_loss)
-            
+
         train_loss = np.mean(train_losses)
         print('epoch {:3d} train loss {:6.4f} {:4.1f}sec'.format(epoch, train_loss, timeit.default_timer() - epoch_start))
 

@@ -11,7 +11,7 @@ from main import load_dataset, create_dataset
 from models import LSTMAutoencoder
 
 def plot_loss_distribution(loss_train):
-    plt.figure(figsize=(8, 3))
+    plt.figure(figsize=(8, 4))
     plt.hist(loss_train['MAE loss'], bins=20, rwidth=0.9, color='blue', alpha=0.5)
     plt.xlim([0.0, 0.5])
     plt.grid(True, linestyle='--')
@@ -21,7 +21,7 @@ def plot_loss_distribution(loss_train):
     plt.savefig('figure/loss_distribution.png', dpi=600/8)
 
 def plot_test_loss(loss, threshold):
-    plt.figure(figsize=(8, 3))
+    plt.figure(figsize=(8, 4))
     loss['MAE loss'].plot(color='blue', alpha=0.7, ax=plt.gca())
     loss['Threshold'].plot(color='red', linestyle='--', alpha=0.7, ax=plt.gca())
     plt.ylim([1e-3, 1e2])
@@ -32,6 +32,18 @@ def plot_test_loss(loss, threshold):
     plt.tight_layout()
     plt.savefig('figure/test_loss.png', dpi=600/8)
 
+def plot_sensors(train, test):
+    split_datetime = train.index.max()
+
+    plt.figure(figsize=(8, 4))
+    pd.concat([train, test]).plot(color=['blue', 'red', 'green', 'black'], linewidth=1, ax=plt.gca())
+    plt.axvline(split_datetime, linestyle='--', color='gray')
+    plt.grid(True, linestyle='--')
+    plt.legend(loc='upper left')
+    plt.ylabel('Vibration signal')
+    plt.tight_layout()
+    plt.savefig('figure/sensors.png', dpi=600/8)
+
 def main(args):
     np.random.seed(args.random_seed)
     torch.manual_seed(args.random_seed)
@@ -39,6 +51,8 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     train, test = load_dataset(args)
+
+    plot_sensors(train, test)
 
     train_dataset, test_dataset = create_dataset(train, test, args)
 
