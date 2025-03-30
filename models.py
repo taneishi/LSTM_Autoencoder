@@ -1,6 +1,5 @@
 from torch import nn
 
-# Define the autoencoder network model.
 class Encoder(nn.Module):
     def __init__(self, seq_len, n_features, embedding_dim=64):
         super(Encoder, self).__init__()
@@ -14,14 +13,14 @@ class Encoder(nn.Module):
             hidden_size=self.hidden_dim,
             num_layers=1,
             batch_first=True
-        )
+            )
 
         self.rnn2 = nn.LSTM(
             input_size=self.hidden_dim,
             hidden_size=embedding_dim,
             num_layers=1,
             batch_first=True
-        )
+            )
 
     def forward(self, x):
         x = x.reshape((1, self.seq_len, self.n_features))
@@ -30,7 +29,7 @@ class Encoder(nn.Module):
         x, (hidden_n, _) = self.rnn2(x)
 
         return hidden_n.reshape((self.seq_len, self.embedding_dim))
-        
+
 class Decoder(nn.Module):
     def __init__(self, seq_len, embedding_dim=64, n_features=1):
         super(Decoder, self).__init__()
@@ -44,14 +43,14 @@ class Decoder(nn.Module):
             hidden_size=self.hidden_dim,
             num_layers=1,
             batch_first=True
-        )
+            )
 
         self.rnn2 = nn.LSTM(
             input_size=self.hidden_dim,
             hidden_size=n_features,
             num_layers=1,
             batch_first=True
-        )
+            )
 
         self.output_layer = nn.Linear(self.n_features, n_features)
 
