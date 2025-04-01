@@ -10,27 +10,29 @@ from torch import nn
 from main import load_dataset, create_dataset
 from models import LSTMAutoencoder
 
-def plot_loss_distribution(loss_train):
-    plt.figure(figsize=(8, 4))
-    plt.hist(loss_train['MAE loss'], bins=20, rwidth=0.9, color='blue', alpha=0.5)
-    plt.xlim([0.0, 0.5])
-    plt.grid(True, linestyle='--')
-    plt.xlabel('Loss')
-    plt.ylabel('Frequency')
-    plt.tight_layout()
-    plt.savefig('figure/loss_distribution.png', dpi=600/8)
-
 def plot_test_loss(loss, threshold):
     plt.figure(figsize=(8, 4))
     loss['MAE loss'].plot(color='blue', alpha=0.7, ax=plt.gca())
     loss['Threshold'].plot(color='red', linestyle='--', alpha=0.7, ax=plt.gca())
-    plt.ylim([1e-3, 1e2])
+    plt.ylim(1e-3, 1e2)
     plt.yscale('log')
     plt.grid(True, linestyle='--')
     plt.ylabel('MAE loss')
     plt.legend(loc='upper left')
     plt.tight_layout()
     plt.savefig('figure/test_loss.png', dpi=600/8)
+
+def plot_loss_distribution(loss_train, threshold):
+    plt.figure(figsize=(8, 4))
+    plt.hist(loss_train['MAE loss'], bins=20, rwidth=0.9, color='blue', alpha=0.5)
+    plt.axline([threshold, 0], [threshold, 80], linestyle='--', alpha=0.7, color='red')
+    plt.xlim(0.0, 0.5)
+    plt.ylim(0, 80)
+    plt.grid(True, linestyle='--')
+    plt.xlabel('Loss')
+    plt.ylabel('Frequency')
+    plt.tight_layout()
+    plt.savefig('figure/loss_distribution.png', dpi=600/8)
 
 def plot_sensors(train, test):
     split_datetime = train.index.max()
@@ -81,7 +83,7 @@ def main(args):
     loss_train['MAE loss'] = np.mean(np.abs(X_pred_train - train_dataset.numpy()), axis=2)
     loss_train['Threshold'] = args.threshold
 
-    plot_loss_distribution(loss_train)
+    plot_loss_distribution(loss_train, args.threshold)
 
     # Calculate the loss distribution of the test set.
     X_pred_test = []
