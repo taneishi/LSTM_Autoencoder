@@ -16,7 +16,7 @@ Before training a model, the dataset is split into two parts: a training set tha
 
 ![sensors](figure/sensors.png)
 
-**Figure 1. The aggregated readings from the sensors of the vibration of a set of four bearings. The dotted line in the figure shows the point where the training and test sets were split. We can see from the figure that the period of abnormal vibrations is not included in the training set.**
+**Figure 1. The aggregated readings from the sensors of the vibration of a set of four bearings. The dashed line in the figure shows the point where the training and test sets were split. We can see from the figure that the period of abnormal vibrations is not included in the training set.**
 
 ### LSTM Autoencoder
 
@@ -30,7 +30,7 @@ It is important to determine the optimal threshold to detect anomalies in order 
 
 ![loss distribution](figure/loss_distribution.png)
 
-**Figure 2. The loss distribution calculated for the training set using the trained model.**
+**Figure 2. The loss distribution calculated for the training set using the trained model. The dashed line indicates the threshold value.**
 
 This plot is used as a reference to determine a suitable threshold for identifying anomalies. The threshold should be set larger than the noise level so that the abnormal vibration and the background vibration noise can be statistically significantly discriminated. If the vibration noise exceeds the threshold, it is a false positive, and if the threshold is set lower than appropriate value, it leads to increased costs due to unnecessary bearing replacements, etc. Based on the loss distribution on the training set, we decided to use 0.275 as the threshold for detecting anomalies.
 
@@ -40,7 +40,7 @@ Next, the losses were calculated for the test set using the trained model to che
 
 ![transition of test losses](figure/test_loss.png)
 
-**Figure 3. The transition of losses against the test set.**
+**Figure 3. The transition of losses against the test set. The dashed line inddicates the threshold value.**
 
 The figure showing the loss distribution for this model visualizes the occurrence of abnormal vibration, which is a predictor of bearing failures. We can confirm that the losses between input and output actually exceed the defined threshold before bearing failure occurs.
 
